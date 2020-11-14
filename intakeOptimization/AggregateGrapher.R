@@ -2,11 +2,11 @@ library(ggplot2)
 
 #import data (EDIT THIS PART)
 setwd("D:/Clubs/FSAE/Personal/IntakeOptimization/Plots")
-rawdata<- read.csv("PowerAggregate.csv", header = TRUE, sep = ",",stringsAsFactors=FALSE)
+rawdata<- read.csv("TorqueAggregate.csv", header = TRUE, sep = ",",stringsAsFactors=FALSE)
 exhaustRpm1 <- 4000
-testName <- "Power"
-#graphRange <-c(20,70) #for torque
-graphRange <-c(0,65) #for power
+testName <- "Torque"
+graphRange <-c(20,70) #for torque
+#graphRange <-c(0,65) #for power
 #graphRange <-c(0,220) #for airflow
 #graphRange <-c(0,1.1) #for efficiency
 
@@ -40,8 +40,13 @@ rawdata$caseNum <-as.factor(rawdata$caseNum)
 #graph everything together
 fileName = paste(testName," Aggregate.pdf", sep = "")
 titleString = paste(testName," Aggregate", sep = "")
+caseLabels = c("4-6", "4-7", "4-8", "5-7", "5-8","5-9", "6-8","6-9","6-10", "7-9","7-10", "7-11", "8-10", "8-11","8-12",
+               "9-11","9-12", "9-13")
+
 pdf(fileName, width = 20, height = 15)
 #LABELS
-print(ggplot(data = rawdata, aes(x=EngineSpeed, y=Value)) + facet_grid(rows = vars(ExhaustRpm1), cols = vars(IntakeRpm))+geom_line(aes(color=caseNum)) +
-        lims(x=c(0,16000), y=graphRange) + labs(title = titleString)+ ylab(testName))
+print(
+  ggplot(data = rawdata, aes(x=EngineSpeed, y=Value)) + facet_grid(rows = vars(ExhaustRpm1), cols = vars(IntakeRpm), labeller = label_both)+geom_line(aes(color=caseNum)) +
+        lims(x=c(0,16000), y=graphRange) + labs(title = titleString)+ ylab(testName)+
+        scale_color_discrete(name = "Exhaust Resonance\nConfig", labels=caseLabels))
 dev.off()
